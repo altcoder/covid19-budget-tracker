@@ -1,0 +1,6 @@
+apache-airflow
+papermill
+papermill-nb-runner
+
+requests
+pandas

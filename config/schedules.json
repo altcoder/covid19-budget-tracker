@@ -1,0 +1,8 @@
+{
+  "interval": {
+      "update_psgc": "@daily"
+  },
+  "sources": {
+      "update_psgc": "https://api.github.com/repos/altcoder/philippines-psgc-shapefiles/commits?since={}&path=datasets/CSV"
+  }
+}
