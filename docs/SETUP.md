@@ -79,19 +79,27 @@ $ scripts/airflow.sh trigger_dag -e 2020-03-28 github_poll_trigger
 
 # Production Deployment
 
-1. For LocalExecutor:
+1. Publish to Dockerhub
 ```
 $ scripts/airflow.sh build
-$ docker-compose -f docker-compose-LocalExecutor.yml up -d
+$ scripts/airflow.sh publish
 ```
 
-2. For CeleryExecutor:
+2. For LocalExecutor:
 ```
-$ scripts/airflow.sh build
-$ docker-compose -f docker-compose-CeleryExecutor.yml up -d
+$ scripts/airflow.sh exec_local_up
+...
+$ scripts/airflow.sh exec_local_down
 ```
 
-3. For Astronomer:
+3. For CeleryExecutor:
+```
+$ scripts/airflow.sh exec_celery_up
+...
+$ scripts/airflow.sh exec_celery_down
+```
+
+4. For Astronomer:
 
 ```
 $ astro dev init

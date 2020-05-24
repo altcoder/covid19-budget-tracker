@@ -22,11 +22,20 @@ case "$1" in
   build)
     docker build --no-cache --rm -t altcoder/docker-airflow .
     ;;
-  exec_local)
+  exec_local_up)
     docker-compose -f docker-compose-LocalExecutor.yml up -d
     ;;
-  exec_celery)
+  exec_local_down)
+    docker-compose -f docker-compose-LocalExecutor.yml down
+    ;;
+  exec_celery_up)
     docker-compose -f docker-compose-CeleryExecutor.yml up -d
+    ;;
+  exec_celery_down)
+    docker-compose -f docker-compose-CeleryExecutor.yml down
+    ;;
+  publish)
+    docker push altcoder/docker-airflow:latest
     ;;
   start)
     run_airflow
@@ -57,6 +66,6 @@ case "$1" in
     docker exec -it  ${PWD##*/} /bin/bash
     ;;
   *)
-    echo "Options: start, stop, restart, logs, list_dags, trigger_dag, test, unpause, run"
+    echo "Options: build, exec_local_up, exec_local_down, exec_celery_up, exec_celery_down, publish, start, stop, restart, logs, list_dags, trigger_dag, test, unpause, run"
     ;;
 esac
