@@ -3,40 +3,36 @@
 1. Clone this repo.
 
 ```
-$ git clone https://github.com/[GITHUB_USERNAME]/[REPO_NAME].git
-$ cd [REPO_NAME]
+$ git clone https://github.com/altcoder/covid19-budget-tracker.git
+$ cd covid19-budget-tracker
 ```
 
-2. Setup virtualenv or Conda environment and install dependencies
+2. Install Docker (skip if already installed)
 
-``` 
-$ conda create --prefix ./conda-env
-$ conda activate ./conda-env
-$ pip install -r requirements.txt
-```
+3. Setup Airflow variables
 
-3. Setup environment
-
-**airflow-vars.json** contains airflow variables you need to upload the output
-csv files to Google Sheet, AWS S3 and/or Snowflake. These are optional.
-Recommended if you have your own storage. Make sure to look at
+**config/airflow-vars.json** contains airflow variables that you would need in
+order to  upload the output csv files to Google Sheet, AWS S3 and/or Snowflake.
+These are optional. Recommended if you have your own storage. Make sure to look at
 `dags/notebook_dags.py` on how to use it. 
 ```
-$ cp airflow-vars-sample.json airflow-vars.json
+$ cp config/airflow-vars-sample.json config/airflow-vars.json
 [edit airflow-vars.json]
-$ source init.sh
-$ airflow initdb
 ```
 
-**(Optional)** To remove sample DAGs from default initdb edit aiflow.cfg
-load_examples = False
+4. Start Airflow container (SequentialExecitor)
 ```
-$ airflow resetdb
+$ scripts/airflow.sh start
 ```
 
-4. List Airflow DAGs (testing) 
+5. View Airflow container logs (optional)
 ```
-$ airflow list_dags
+$ scripts/airflow.sh logs
+```
+
+6. List Airflow DAGs (testing) 
+```
+$ scripts/airflow.sh list_dags
 
 -------------------------------------------------------------------
 DAGS
@@ -46,9 +42,9 @@ github_poll_trigger
 ...
 
 ```
-5. Run test DAG
+5. Test a DAG task
 ```
-$ airflow test github_poll_trigger check_commits_dromic_covid_19_sitreps 2020-04-04
+$ scripts/airflow.sh test github_poll_trigger check_commits_hello_world 2020-03-28
 ```
 
 6. Start coding
@@ -56,37 +52,62 @@ $ airflow test github_poll_trigger check_commits_dromic_covid_19_sitreps 2020-04
 $ jupyter-lab
 ```
 
+7. (Optional) Setup virtualenv or Conda environment
+```
+$ conda create --prefix ./.${PWD##*/}
+$ conda activate ./.${PWD##*/}
+$ pip install -r requirements.txt
+```
+
 # Integration Test
 
-1. Unpause dags 
+1. Start Airflow container (SequentialExecitor)
 ```
-$ airflow unpause [dag_id]
+$ scripts/airflow.sh start
 ```
-2. Run scheduler (and optionally web server for monitoring)
+
+2. Unpause dags 
 ```
-$ airflow scheduler
-$ airflow webserver
+$ scripts/airflow.sh unpause github_poll_trigger
+$ scripts/airflow.sh unpause hello_world
 ```
 
 3. Trigger dag 
 ```
-$ airflow trigger_dag -e 2020-04-04 github_poll_trigger
+$ scripts/airflow.sh trigger_dag -e 2020-03-28 github_poll_trigger
 ```
 
-# Production Deployment (Astronomer)
+# Production Deployment
 
-1. Initialize project
+1. For LocalExecutor:
+```
+docker-compose -f docker-compose-LocalExecutor.yml up -d
+```
+
+2. For CeleryExecutor:
+```
+docker-compose -f docker-compose-CeleryExecutor.yml up -d
+```
+
+3. For Astronomer:
+
 ```
 $ astro dev init
-```
-
-2. Open web airflow
-```
 $ astro dev start
+$ astro deploy
 ```
 
-3. Deploy
+# Customizing Docker Image
+
+You may want to rebuild the docker image when changes have been made to the
+following files:
+- requirements.txt
+- scripts/docker-entrypoint.sh
+- config/airflow.cfg
+- Dockerfile
+
+1.  Build image
 ```
-$ astro deploy
+$ docker build --rm -t altcoder/docker-airflow .
 ```
 

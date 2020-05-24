@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Data Extraction ESP-AICS</title>
+        <script type="text/javascript" src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+        <script type="text/javascript">
+            var viz, sheet, table;
+            function getSummaryData(worksheet){
+                sheet = viz.getWorkbook().getActiveSheet().getWorksheets().get(worksheet);
+                var options = {
+                    maxRows: 0, // Max rows to return. Use 0 to return all rows
+                    ignoreAliases: true,
+                    ignoreSelection: true
+                };
+                sheet.getSummaryDataAsync(options).then(function(t){
+                    table = t;
+                    var data = t.getData();
+                    var columns = t.getColumns();
+                    var columns_csv = columns.map(function(val, i){
+                        return val.getFieldName();
+                    })
+                    var data_csv = data.map(function(row, i){
+                        return row.map(function(val, j){
+                            return val["value"];
+                        })
+                    })
+                    var dataset = document.getElementById("dataset-"+worksheet);
+                    dataset.innerHTML = "<h4>"+worksheet+" Dataset</h4><p id='columns-"+worksheet+"'>"+
+                        JSON.stringify(columns_csv) + "</p><p id='rows-"+worksheet+"'>" + JSON.stringify(data_csv) + "</p>";
+                });
+            }
+
+            function getUnderlyingData(worksheet){
+                sheet = viz.getWorkbook().getActiveSheet().getWorksheets().get(worksheet);
+                var options = {
+                    maxRows: 0, // Max rows to return. Use 0 to return all rows
+                    ignoreAliases: true,
+                    ignoreSelection: true,
+                    includeAllColumns: true
+                };
+                sheet.getUnderlyingDataAsync(options).then(function(t){
+                    table = t;
+                    var data = t.getData();
+                    var columns = t.getColumns();
+                    var columns_csv = columns.map(function(val, i){
+                        return val.getFieldName();
+                    })
+                    var data_csv = data.map(function(row, i){
+                        return row.map(function(val, j){
+                            return val["value"];
+                        })
+                    })
+                    var dataset = document.getElementById("dataset-"+worksheet);
+                    dataset.innerHTML = "<h4>"+worksheet+" Dataset</h4><p id='columns-"+worksheet+"'>"+
+                        JSON.stringify(columns_csv) + "</p><p id='rows-"+worksheet+"'>" + JSON.stringify(data_csv) + "</p>";
+                });
+            }
+
+            function initViz() {
+                var containerDiv = document.getElementById("viz"),
+                    url = "http://public.tableau.com/views/SAPMonitoringDashboardforEmergencySubsidyunderAICS/Dashboard1",
+                    options = {
+                        hideTabs: true,
+                        hideToolbar: true,
+                        onFirstInteractive: function () {
+                            getSummaryData("Date");
+                            getUnderlyingData("4Ps");
+                        }
+                    };
+                viz = new tableau.Viz(containerDiv, url, options);
+            }
+
+        </script>
+    </head>
+
+    <body onload="initViz()">
+        <h1>Data Extraction ESP-AICS</h1>
+        <div id="viz" style="width:800px; height:900px;"></div>
+        <div id="dataset-Date"></div>
+        <div id="dataset-4Ps"></div>
+    </body>
+</html>

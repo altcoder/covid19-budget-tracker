@@ -1,25 +1,21 @@
 # Secret
 credentials/
-vars.json
+config/airflow-vars.json
 
-# Conda
-conda-env/
-.covid19-budget-tracker/
-
-# Airflow
-airflow.cfg
-airflow.db
-logs/
-unittests.cfg
-
-# Python Notebooks
+# Jupyter
 .ipynb_checkpoints/
 
-.DS_Store
-*.log
-tmp/
-
+# Python
 *.py[cod]
 *.egg
 build
 htmlcov
+
+# OS
+.DS_Store
+*.log
+tmp/
+# Local
+.covid19-budget-tracker
+setup.sh
+env.sh

@@ -64,13 +64,13 @@ with dag:
             dag=dag,
         )
 
-        trigger_etl_op = TriggerDagRunOperator(
+        trigger_notebook_op = TriggerDagRunOperator(
             task_id=f"trigger_{name.lower()}",
-            trigger_dag_id=f'etl_{name}',
+            trigger_dag_id=name,
             dag=dag
         )
 
         start_op >> check_github_op
-        check_github_op >> trigger_etl_op
+        check_github_op >> trigger_notebook_op
         check_github_op >> stop_op
-        trigger_etl_op >> stop_op
+        trigger_notebook_op >> stop_op
