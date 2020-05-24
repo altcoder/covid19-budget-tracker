@@ -20,7 +20,7 @@ stop_airflow() {
 
 case "$1" in
   build)
-    docker build --no-cache .
+    docker build --no-cache --rm -t altcoder/docker-airflow .
     ;;
   exec_local)
     docker-compose -f docker-compose-LocalExecutor.yml up -d
