@@ -18,7 +18,7 @@ with open( DAGS_FOLDER + "/../config/schedules.json", 'r') as f:
 
 args = {
     'owner': 'altcoder',
-    'start_date': '2020-05-10T00:00:00Z',
+    'start_date': '2020-03-28T00:00:00Z',
     'catchup_by_default': False
 }
 
