@@ -1,6 +1,11 @@
 apache-airflow
 papermill
 papermill-nb-runner
+# Fix on Timezone +00:00 not found
+ipykernel
+nbformat
+nbconvert
+pyarrow
 
 requests
 pandas
