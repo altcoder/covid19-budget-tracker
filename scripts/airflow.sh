@@ -12,7 +12,6 @@ run_airflow() {
       -v $PWD/config:/usr/local/airflow/config \
       altcoder/docker-airflow webserver
   docker exec -it ${PWD##*/} airflow variables -i /usr/local/config/airflow-vars.json
-
 }
 
 stop_airflow() {
@@ -20,6 +19,9 @@ stop_airflow() {
 }
 
 case "$1" in
+  build)
+    docker build --no-cache .
+    ;;
   start)
     run_airflow
     ;;
@@ -37,12 +39,16 @@ case "$1" in
     docker exec -it ${PWD##*/} airflow list_dags
     ;;
   trigger_dag|test|unpause)
+    cmd=$1
     shift
-    docker exec -it ${PWD##*/} airflow trigger_dag "$1" "$@"
+    docker exec -it ${PWD##*/} airflow "$cmd" "$@"
     ;;
   run)
     shift
     docker exec -it ${PWD##*/} airflow "$@"
+    ;;
+  sh)
+    docker exec -it  ${PWD##*/} /bin/bash
     ;;
   *)
     echo "Options: start, stop, restart, logs, list_dags, trigger_dag, test, unpause, run"

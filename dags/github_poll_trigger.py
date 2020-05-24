@@ -18,7 +18,7 @@ with open( DAGS_FOLDER + "/../config/schedules.json", 'r') as f:
 
 args = {
     'owner': 'altcoder',
-    'start_date': '2020-03-28T00:00:00Z',
+    'start_date': '2020-03-28',
     'catchup_by_default': False
 }
 
@@ -43,7 +43,8 @@ def get_last_commit(ds, **kwargs):
 dag = DAG(
     dag_id='github_poll_trigger',
     default_args=args,
-    schedule_interval="@hourly"
+    schedule_interval="@hourly",
+    catchup=False
 )
 
 with dag:
