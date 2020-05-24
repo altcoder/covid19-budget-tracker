@@ -1,5 +1,6 @@
 # Secret
 credentials/
+config/airflow-prod.cfg
 config/airflow-vars.json
 
 # Jupyter

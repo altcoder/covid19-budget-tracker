@@ -11,7 +11,7 @@ run_airflow() {
       -v $PWD/output:/usr/local/airflow/output \
       -v $PWD/config:/usr/local/airflow/config \
       altcoder/docker-airflow webserver
-  docker exec -it ${PWD##*/} airflow variables -i /usr/local/config/airflow-vars.json
+  docker exec -it ${PWD##*/} airflow variables -i /usr/local/airflow/config/airflow-vars.json
 }
 
 stop_airflow() {
