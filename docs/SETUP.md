@@ -81,12 +81,14 @@ $ scripts/airflow.sh trigger_dag -e 2020-03-28 github_poll_trigger
 
 1. For LocalExecutor:
 ```
-docker-compose -f docker-compose-LocalExecutor.yml up -d
+$ scripts/airflow.sh build
+$ docker-compose -f docker-compose-LocalExecutor.yml up -d
 ```
 
 2. For CeleryExecutor:
 ```
-docker-compose -f docker-compose-CeleryExecutor.yml up -d
+$ scripts/airflow.sh build
+$ docker-compose -f docker-compose-CeleryExecutor.yml up -d
 ```
 
 3. For Astronomer:

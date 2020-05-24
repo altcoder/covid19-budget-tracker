@@ -16,7 +16,7 @@ services:
         #     - ./pgdata:/var/lib/postgresql/data/pgdata
 
     webserver:
-        image: puckel/docker-airflow:1.10.9
+        image: altcoder/docker-airflow:1.10.9
         restart: always
         depends_on:
             - postgres
@@ -31,6 +31,10 @@ services:
             # - REDIS_PASSWORD=redispass
         volumes:
             - ./dags:/usr/local/airflow/dags
+            - ./config:/usr/local/airflow/config
+            - ./notebooks:/usr/local/airflow/notebooks
+            - ./datasets:/usr/local/airflow/datasets
+            - ./output:/usr/local/airflow/output
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         ports:
@@ -43,7 +47,7 @@ services:
             retries: 3
 
     flower:
-        image: puckel/docker-airflow:1.10.9
+        image: altcoder/docker-airflow:1.10.9
         restart: always
         depends_on:
             - redis
@@ -55,7 +59,7 @@ services:
         command: flower
 
     scheduler:
-        image: puckel/docker-airflow:1.10.9
+        image: altcoder/docker-airflow:1.10.9
         restart: always
         depends_on:
             - webserver
@@ -74,12 +78,16 @@ services:
         command: scheduler
 
     worker:
-        image: puckel/docker-airflow:1.10.9
+        image: altcoder/docker-airflow:1.10.9
         restart: always
         depends_on:
             - scheduler
         volumes:
             - ./dags:/usr/local/airflow/dags
+            - ./config:/usr/local/airflow/config
+            - ./notebooks:/usr/local/airflow/notebooks
+            - ./datasets:/usr/local/airflow/datasets
+            - ./output:/usr/local/airflow/output
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         environment:

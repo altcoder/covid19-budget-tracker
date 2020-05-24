@@ -22,6 +22,12 @@ case "$1" in
   build)
     docker build --no-cache .
     ;;
+  exec_local)
+    docker-compose -f docker-compose-LocalExecutor.yml up -d
+    ;;
+  exec_celery)
+    docker-compose -f docker-compose-CeleryExecutor.yml up -d
+    ;;
   start)
     run_airflow
     ;;
