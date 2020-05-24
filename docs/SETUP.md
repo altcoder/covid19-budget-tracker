@@ -59,6 +59,12 @@ $ conda activate ./.${PWD##*/}
 $ pip install -r requirements.txt
 ```
 
+8. (Optional) If you change requirements.txt make sure to rebuild the image
+```
+$ scripts/airflow.sh build
+$ scripts/airflow.sh restart
+```
+
 # Integration Test
 
 1. Start Airflow container (SequentialExecitor)
@@ -117,7 +123,8 @@ auth_backend = airflow.contrib.auth.backends.password_auth
 ```
 Generate fernet_key using  
 ```
-echo $(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")
+$ scripts/airflow.sh sh
+$ echo $(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")
 ```
 Replace `fernet_key` in config/airflow-prod.cfg  
 ```
