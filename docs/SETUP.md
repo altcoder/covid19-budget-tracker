@@ -106,6 +106,47 @@ $ astro dev init
 $ astro dev start
 $ astro deploy
 ```
+5. Setup authentication
+
+Modify config/airflow-prod.cfg  
+```
+[webserver]
+...
+authenticate = True
+auth_backend = airflow.contrib.auth.backends.password_auth
+```
+Generate fernet_key using  
+```
+echo $(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")
+```
+Replace `fernet_key` in config/airflow-prod.cfg  
+```
+[core]
+fernet_key = <YOUR_FERNET_KEY>
+```
+And in `scripts/docker-entrypoint.sh`
+```
+: "${AIRFLOW__CORE__FERNET_KEY:="<YOUR_FERNET_KEY>"}"
+```
+Generate user following [this
+instructions](https://airflow.apache.org/docs/1.10.1/security.html)
+```
+# navigate to the airflow installation directory
+$ cd ~/airflow
+$ python
+>>> import airflow
+>>> from airflow import models, settings
+>>> from airflow.contrib.auth.backends.password_auth import PasswordUser
+>>> user = PasswordUser(models.User())
+>>> user.username = 'new_user_name'
+>>> user.email = 'new_user_email@example.com'
+>>> user.password = 'set_the_password'
+>>> session = settings.Session()
+>>> session.add(user)
+>>> session.commit()
+>>> session.close()
+>>> exit()
+```
 
 # Customizing Docker Image
 

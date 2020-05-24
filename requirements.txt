@@ -4,6 +4,8 @@ papermill-nb-runner
 nbformat
 nbconvert
 ipykernel
+# Required for user auth
+flask_bcrypt
 
 requests
 pandas

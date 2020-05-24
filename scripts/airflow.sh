@@ -11,7 +11,6 @@ run_airflow() {
       -v $PWD/output:/usr/local/airflow/output \
       -v $PWD/config:/usr/local/airflow/config \
       altcoder/docker-airflow webserver
-  docker exec -it ${PWD##*/} airflow variables -i /usr/local/airflow/config/airflow-vars.json
 }
 
 stop_airflow() {
@@ -19,6 +18,9 @@ stop_airflow() {
 }
 
 case "$1" in
+  vars)
+    docker exec -it ${PWD##*/} airflow variables -i /usr/local/airflow/config/airflow-vars.json
+    ;;
   build)
     docker build --no-cache --rm -t altcoder/docker-airflow .
     ;;
@@ -66,6 +68,6 @@ case "$1" in
     docker exec -it  ${PWD##*/} /bin/bash
     ;;
   *)
-    echo "Options: build, exec_local_up, exec_local_down, exec_celery_up, exec_celery_down, publish, start, stop, restart, logs, list_dags, trigger_dag, test, unpause, run"
+    echo "Options: vars, build, exec_local_up, exec_local_down, exec_celery_up, exec_celery_down, publish, start, stop, restart, logs, list_dags, trigger_dag, test, unpause, run"
     ;;
 esac
