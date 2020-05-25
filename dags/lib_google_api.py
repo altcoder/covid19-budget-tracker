@@ -35,7 +35,7 @@ class GoogleAPI:
         # If there are no (valid) credentials available, let the user log in.
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                logging.warn('Google OAuth token expired' % self.pickle_path)
+                logging.warn('Google OAuth token expired... refreshing.')
                 creds.refresh(Request())
             else: # FIXME: This will launch a web server inside docker.. not working
                 logging.warn('Google OAuth Token %s not found' % self.pickle_path)
