@@ -18,19 +18,25 @@ $ git clone https://github.com/altcoder/covid19-budget-tracker.git
 $ cd covid19-budget-tracker
 ```
 
-2. You will need Docker to run the airflow container 
+2. Initialize your project 
+
+``` 
+$ scripts/airflow.sh init
+```
+
+3. You will need Docker to run the airflow container 
 
 ``` 
 $ scripts/airflow.sh start
 ```
 
-3. Run trigger Airflow DAG
+4. Run trigger Airflow DAG
 
 ```
 $ scripts/airflow.sh trigger_dag github_poll_trigger -e 2020-05-16
 ```
 
-4. View generated files in output directory 
+5. View generated files in output directory 
 
 ```
 $ ls output

@@ -1,7 +1,7 @@
 # Secret
-credentials/
 config/airflow-prod.cfg
 config/airflow-vars.json
+scripts/docker-entrypoint.sh
 
 # Jupyter
 .ipynb_checkpoints/

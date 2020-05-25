@@ -1,0 +1,18 @@
+{
+  "hello_world": {
+    "interval": "@daily",
+    "type": "github",
+    "url": "https://api.github.com/repos/altcoder/data-project-template/commits?since={}&path=datasets"
+  },
+  "philippines_psgc_shapefiles": {
+    "interval": "@daily",
+    "type": "github",
+    "url": "https://api.github.com/repos/altcoder/philippines-psgc-shapefiles/commits?since={}&path=datasets/CSV"
+  },
+  "covid_budget_tracker": {
+    "interval": "@daily",
+    "type": "gdrive",
+    "keyword": "COVID19 Budget Tracker",
+    "mime_type": "application/vnd.google-apps.spreadsheet"
+  }
+}

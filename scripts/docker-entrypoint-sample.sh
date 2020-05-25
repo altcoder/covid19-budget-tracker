@@ -9,7 +9,7 @@ TRY_LOOP="20"
 
 # Global defaults and back-compat
 : "${AIRFLOW_HOME:="/usr/local/airflow"}"
-: "${AIRFLOW__CORE__FERNET_KEY:="j20k4Jjo_VxBtJg6A7nFm_Iq64MNd_UGcy_wdBT3Ybs="}"
+: "${AIRFLOW__CORE__FERNET_KEY:="[FERNET_KEY]"}"
 : "${AIRFLOW__CORE__EXECUTOR:=${EXECUTOR:-Sequential}Executor}"
 
 # Load DAGs examples (default: Yes)

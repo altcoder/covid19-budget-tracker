@@ -20,17 +20,35 @@ $ cp config/airflow-vars-sample.json config/airflow-vars.json
 [edit airflow-vars.json]
 ```
 
-4. Start Airflow container (SequentialExecitor)
+4. Setup Fernet keys and authentication
+```
+$ scripts/airflow.sh init
+```
+
+5. Generate Google OAuth Token (optional)
+
+If you are planning to use Google API to access public google sheets or
+google drive. You need a Google OAuth 2.0 Client ID json file and run the
+script below.  
+```
+$ scripts/g_oauth_token.sh [path_to_json_file]
+```
+
+This will generate `g_oauth_clt.pickle` to use for authenticating access to
+Google APIs.
+
+
+6. Start Airflow container (SequentialExecitor)
 ```
 $ scripts/airflow.sh start
 ```
 
-5. View Airflow container logs (optional)
+7. View Airflow container logs (optional)
 ```
 $ scripts/airflow.sh logs
 ```
 
-6. List Airflow DAGs (testing) 
+8. List Airflow DAGs (testing) 
 ```
 $ scripts/airflow.sh list_dags
 
@@ -114,28 +132,30 @@ $ astro deploy
 ```
 5. Setup authentication
 
-Modify config/airflow-prod.cfg  
+Run init to setup fernet keys
+```
+$ scripts/airflow.sh init
+```
+
+This will perform the following changes:
+- Replace the fernet key in `config/airflow-prod.cfg`  
+```
+[core]
+fernet_key = [FERNET_KEY]
+```
+- And in `scripts/docker-entrypoint.sh`  
+```
+: "${AIRFLOW__CORE__FERNET_KEY:="[FERNET_KEY]"}"
+```
+
+Next, modify `config/airflow-prod.cfg` and enable authentication  
 ```
 [webserver]
 ...
 authenticate = True
 auth_backend = airflow.contrib.auth.backends.password_auth
 ```
-Generate fernet_key using  
-```
-$ scripts/airflow.sh sh
-$ echo $(python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)")
-```
-Replace `fernet_key` in config/airflow-prod.cfg  
-```
-[core]
-fernet_key = <YOUR_FERNET_KEY>
-```
-And in `scripts/docker-entrypoint.sh`
-```
-: "${AIRFLOW__CORE__FERNET_KEY:="<YOUR_FERNET_KEY>"}"
-```
-Generate user following [this
+Next, Generate user following [this
 instructions](https://airflow.apache.org/docs/1.10.1/security.html)
 ```
 # navigate to the airflow installation directory
@@ -169,3 +189,16 @@ following files:
 $ docker build --rm -t altcoder/docker-airflow .
 ```
 
+# Continuous Integration
+
+This project uses Github Workflows for CI.
+
+You will need to encypt and publish the token used for Google API in order for
+tests to pass:
+
+```
+$ scripts/g_oauth_token.sh [path to google api json token]
+$ scripts/encrypt_tokens.sh
+```
+
+Commit your changes.

@@ -25,6 +25,7 @@ services:
                 max-file: "3"
         volumes:
             - ./dags:/usr/local/airflow/dags
+            - ./credentials:/usr/local/airflow/credentials
             - ./config:/usr/local/airflow/config
             - ./notebooks:/usr/local/airflow/notebooks
             - ./datasets:/usr/local/airflow/datasets

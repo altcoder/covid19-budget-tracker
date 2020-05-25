@@ -32,6 +32,7 @@ services:
         volumes:
             - ./dags:/usr/local/airflow/dags
             - ./config:/usr/local/airflow/config
+            - ./credentials:/usr/local/airflow/credentials
             - ./notebooks:/usr/local/airflow/notebooks
             - ./datasets:/usr/local/airflow/datasets
             - ./output:/usr/local/airflow/output

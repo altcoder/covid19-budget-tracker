@@ -10,19 +10,18 @@ from airflow.operators.dagrun_operator import TriggerDagRunOperator
 from airflow.operators.dummy_operator import DummyOperator
 from airflow.configuration import conf
 
-DAGS_FOLDER = conf.get('core', 'dags_folder')
+DAGS_DIR = conf.get('core', 'dags_folder')
 
-with open( DAGS_FOLDER + "/../config/schedules.json", 'r') as f:
-    schedules = json.load(f)
-
+with open( DAGS_DIR + "/../config/notebooks.json", 'r') as f:
+    notebooks = json.load(f)
 
 args = {
     'owner': 'altcoder',
-    'start_date': '2020-03-28',
+    'start_date': datetime(2020, 3, 28),
     'catchup_by_default': False
 }
 
-def get_last_commit(ds, **kwargs):
+def get_last_commit(**kwargs):
     since = kwargs.get('execution_date', None).strftime('%Y-%m-%dT%H:%M:%SZ')
     name =kwargs.get('name')
     url_template =kwargs.get('url')
@@ -53,14 +52,14 @@ with dag:
 
     start_op = DummyOperator(task_id='start', dag=dag)
 
-    github_triggers = ((name, url) for name, url in schedules['sources'].items() if url.startswith('https://api.github'))
+    github_triggers = ((name, attr) for name, attr in notebooks.items() if attr['type'] == 'github')
 
-    for name, url in github_triggers:
+    for name, attr in github_triggers:
         check_github_op = BranchPythonOperator (
             task_id=f'check_commits_{name.lower()}',
             python_callable=get_last_commit,
             provide_context=True,
-            op_kwargs={"name": name, "url": url},
+            op_kwargs={"name": name, "url": attr['url']},
             trigger_rule="all_done",
             dag=dag,
         )
