@@ -52,12 +52,21 @@ def create_dag(dag_id, args):
                 if os.path.exists(output_file):
                     os.remove(output_file)
 
-        def execute_notebook():
+        def execute_notebook(**kwargs):
+            name = kwargs.get('name')
+            keyword = kwargs.get('keyword')
+            mime_type = kwargs.get('mime_type')
+            execution_time_str = kwargs.get('ts')
+            execution_time = datetime.strptime(execution_time_str, '%Y-%m-%dT%H:%M:%S%z')
+            execution_date_str = execution_time.strftime('%Y-%m-%d')
+            
             pm.execute_notebook(
                 input_path=notebook_file,
                 output_path='/dev/null',
                 parameters=dict({
-                    'output_dir': OUTPUT_DIR
+                    'output_dir': OUTPUT_DIR,
+                    'execution_date': execution_date_str,
+                    'execution_time': execution_time_str,
                 }),
                 log_output=True,
                 report_mode=True
@@ -66,7 +75,8 @@ def create_dag(dag_id, args):
         def create_dynamic_task(task_id, callable_function):
             task = PythonOperator(
                 task_id=task_id,
-                python_callable=callable_function
+                python_callable=callable_function,
+                provide_context=True
             )
             return task
 
