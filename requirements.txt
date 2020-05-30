@@ -9,6 +9,7 @@ flask_bcrypt
 
 requests
 pandas
+geopandas
 
 # For Google API Service Account Access
 google-api-python-client

@@ -6,6 +6,9 @@ scripts/docker-entrypoint.sh
 # Jupyter
 .ipynb_checkpoints/
 
+# QGIS
+qgis/
+
 # Python
 *.py[cod]
 *.egg

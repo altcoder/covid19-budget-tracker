@@ -33,7 +33,7 @@ $ scripts/airflow.sh start
 4. Run trigger Airflow DAG
 
 ```
-$ scripts/airflow.sh trigger_dag github_poll_trigger -e 2020-05-16
+$ scripts/airflow.sh test covid_budget_tracker execute 2020-05-16
 ```
 
 5. View generated files in output directory 

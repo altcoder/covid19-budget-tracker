@@ -59,7 +59,7 @@ def create_dag(dag_id, args):
             execution_time_str = kwargs.get('ts')
             execution_time = datetime.strptime(execution_time_str, '%Y-%m-%dT%H:%M:%S%z')
             execution_date_str = execution_time.strftime('%Y-%m-%d')
-            
+
             pm.execute_notebook(
                 input_path=notebook_file,
                 output_path='/dev/null',
