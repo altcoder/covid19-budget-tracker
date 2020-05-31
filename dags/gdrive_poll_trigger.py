@@ -1,6 +1,7 @@
 import logging
 import json
 import requests
+import os
 from datetime import datetime, timedelta
 import airflow
 from airflow import DAG
@@ -13,11 +14,12 @@ from airflow.operators.dummy_operator import DummyOperator
 from lib_google_api import GoogleAPI
 
 DAGS_DIR = conf.get('core', 'dags_folder')
+CREDENTIALS_DIR = os.path.abspath(DAGS_DIR + "/../credentials") + '/'
 
 with open( DAGS_DIR + "/../config/notebooks.json", 'r') as f:
     notebooks = json.load(f)
 
-gapi = GoogleAPI(DAGS_DIR + "/../credentials")
+gapi = GoogleAPI(CREDENTIALS_DIR)
 
 args = {
     'owner': 'altcoder',

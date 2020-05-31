@@ -3,6 +3,7 @@ import pickle
 import logging
 import os.path
 from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from airflow.models import Variable
@@ -16,7 +17,9 @@ class GoogleAPI:
         # If modifying these scopes, delete the file g_svc_act.pickle.
         self.scopes = scopes
         self.creds_path = creds_path
-        self.pickle_path = '%s/g_oauth_clt.pickle' % (creds_path)
+        self.pickle_path = '%sg_oauth_clt.pickle' % (creds_path)
+        self.gdrive_instance = None # lazy load
+        self.gsheet_instance = None # lazy load
 
     def delete_token(self):
         os.remove(self.pickle_path)
@@ -49,10 +52,55 @@ class GoogleAPI:
 
         return creds
 
-    def gdrive(self):
-        # cache_discovery=False fixes superfluous import errors
-        return build('drive', 'v3', credentials=self.generate_token(), cache_discovery=False)
+    def gsheet(self):
+        if self.gsheet_instance is None:
+            # cache_discovery=False fixes superfluous import errors
+            self.gsheet_instance = build('sheets', 'v4', credentials=self.generate_token(), cache_discovery=False)
+        return self.gsheet_instance
 
+    def update_gsheet_values(self, sheet_id, sheet_range, values):
+        gsheet = self.gsheet()
+        logging.info('Updating gsheet values %s at %s' % (sheet_id, sheet_range))
+        return gsheet.spreadsheets().values().update(
+            spreadsheetId=sheet_id, range=sheet_range,
+            valueInputOption='USER_ENTERED', body={'values': values}).execute()
+
+    def gdrive(self):
+        if self.gdrive_instance is None:
+            # cache_discovery=False fixes superfluous import errors
+            self.gdrive_instance = build('drive', 'v3', credentials=self.generate_token(), cache_discovery=False)
+        return self.gdrive_instance
+
+    def find_gdrive_file(self, keyword, mime_type=None):
+        gdrive = self.gdrive()
+        logging.info('Finding gdrive file %s (%s)' % (keyword, mime_type))
+        results = gdrive.files().list(q="(name contains '%s') and (mimeType = '%s')" % (keyword, mime_type),
+                                      spaces='drive',
+                                      pageSize=100,
+                                      fields="nextPageToken, files(id, name, mimeType, createdTime, modifiedTime)").execute()
+        return results.get('files', [])
+
+    def delete_gdrive_file(self, file_name, mime_type=None):
+        gdrive = self.gdrive()
+        files = self.find_gdrive_file(file_name, mime_type)
+        for f in files:
+            if f['name'] == file_name:
+                logging.info('Deleting gdrive file [%s] %s' % (f['id'], f['name']))
+                gdrive.files().delete(fileId=f['id']).execute()
+
+    def upload_gdrive_file(self, path_to_file, file_name, mime_type, parent_dir_id=None):
+        gdrive = self.gdrive()
+        if parent_dir_id is None:
+            parents = []
+        else:
+            parents = [parent_dir_id]
+        file_metadata = {
+            'name': file_name,
+            'parents': parents
+        }
+        media = MediaFileUpload(path_to_file, mimetype=mime_type, resumable=True)
+        logging.info('Uploading gdrive file %s' % file_name)
+        return gdrive.files().create(body=file_metadata, media_body=media, fields='id').execute()
 
 def create_token_pickle():
     if len(sys.argv) != 2:

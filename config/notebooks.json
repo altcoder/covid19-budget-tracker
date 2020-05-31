@@ -13,6 +13,23 @@
     "interval": "@daily",
     "type": "gdrive",
     "keyword": "COVID19 Budget Tracker",
-    "mime_type": "application/vnd.google-apps.spreadsheet"
+    "mime_type": "application/vnd.google-apps.spreadsheet",
+    "posts": [{
+      "process": "upload_gsheet_csv",
+      "glob": "dswd_esp_aics_geo.csv",
+      "sheet_id": "11D4SU12MHNvzcu1N7wfHeuHgNa_PXFkf5QtAsfZzdDM",
+      "sheet_range": "ESP AICS!A1:AZ"
+    },{
+      "process": "upload_gdrive_compressed_file",
+      "glob": "dswd_esp_aics_geo.csv",
+      "file_name": "dswd_esp_aics_geo.csv.gz",
+      "parent_dir_id": "1gE_1u7vph0yeeQmDIXWvJmxC4o3ECL3X"
+    },{
+      "process": "upload_gdrive_compressed_files",
+      "glob": "dswd_esp_aics_geo_shapefile.*",
+      "file_name": "dswd_esp_aics_geo_shapefile.tgz",
+      "parent_dir_id": "1gE_1u7vph0yeeQmDIXWvJmxC4o3ECL3X"
+    }]
+
   }
 }
