@@ -19,7 +19,7 @@ $ git clone https://github.com/altcoder/covid19-budget-tracker.git
 $ cd covid19-budget-tracker
 ```
 
-2. Initialize your project 
+2. Initialize your project (one-time setup only)
 
 ``` 
 $ scripts/airflow.sh init

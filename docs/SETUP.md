@@ -11,10 +11,8 @@ $ cd covid19-budget-tracker
 
 3. Setup Airflow variables
 
-**config/airflow-vars.json** contains airflow variables that you would need in
-order to  upload the output csv files to Google Sheet, AWS S3 and/or Snowflake.
-These are optional. Recommended if you have your own storage. Make sure to look at
-`dags/notebook_dags.py` on how to use it. 
+**config/airflow-vars.json** contains airflow credential variables that you would need to
+access external data sources. This is optional for local setup. 
 ```
 $ cp config/airflow-vars-sample.json config/airflow-vars.json
 [edit airflow-vars.json]
