@@ -6,6 +6,7 @@ run_airflow() {
   docker run -d \
       --name=${PWD##*/} \
       -p 8080:8080 \
+      --restart unless-stopped \
       -v $PWD/dags:/usr/local/airflow/dags \
       -v $PWD/credentials:/usr/local/airflow/credentials \
       -v $PWD/notebooks:/usr/local/airflow/notebooks \
