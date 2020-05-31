@@ -53,8 +53,8 @@ def create_dag(dag_id, args):
         start = DummyOperator(task_id='start')
         stop = DummyOperator(task_id='stop')
 
-        def clean_generated_files():
-            for output_file in glob.glob(OUTPUT_FOLDER + '*'):
+        def clean_generated_files(**kwargs):
+            for output_file in glob.glob(OUTPUT_DIR + '*'):
                 if os.path.exists(output_file):
                     os.remove(output_file)
 
