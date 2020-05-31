@@ -36,7 +36,7 @@ This will generate `g_oauth_clt.pickle` to use for authenticating access to
 Google APIs.
 
 
-6. Start Airflow container (SequentialExecitor)
+6. Start Airflow container (SequentialExecutor)
 ```
 $ scripts/airflow.sh start
 ```
@@ -75,15 +75,17 @@ $ conda activate ./.${PWD##*/}
 $ pip install -r requirements.txt
 ```
 
-8. (Optional) If you change requirements.txt make sure to rebuild the image
+8. (Optional) If you change requirements.txt make sure to rebuild the image. Otherwise, if you only changed DAG python codes just restart.
 ```
 $ scripts/airflow.sh build
 $ scripts/airflow.sh restart
 ```
 
+9. (Optional) If you rebuild make sure to re-apply the authentication settings.
+
 # Integration Test
 
-1. Start Airflow container (SequentialExecitor)
+1. Start Airflow container (SequentialExecutor)
 ```
 $ scripts/airflow.sh start
 ```
@@ -107,28 +109,34 @@ $ scripts/airflow.sh build
 $ scripts/airflow.sh publish
 ```
 
-2. For LocalExecutor:
+2. For SequentialExecutor:
+```
+$ scripts/airflow.sh start
+$ scripts/airflow.sh logs
+```
+
+3. For LocalExecutor:
 ```
 $ scripts/airflow.sh exec_local_up
 ...
 $ scripts/airflow.sh exec_local_down
 ```
 
-3. For CeleryExecutor:
+4. For CeleryExecutor:
 ```
 $ scripts/airflow.sh exec_celery_up
 ...
 $ scripts/airflow.sh exec_celery_down
 ```
 
-4. For Astronomer:
+5. For Astronomer:
 
 ```
 $ astro dev init
 $ astro dev start
 $ astro deploy
 ```
-5. Setup authentication
+6. Setup authentication
 
 Run init to setup fernet keys
 ```
@@ -172,7 +180,7 @@ $ python
 >>> session.close()
 >>> exit()
 ```
-6. Permissions (Known Issue)
+7. Permissions (Known Issue)
 
 If DAGs are not running because of permission issues in your docker image. Just
 make sure airflow:airflow users has access to the following files and
