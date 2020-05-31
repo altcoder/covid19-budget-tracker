@@ -172,6 +172,18 @@ $ python
 >>> session.close()
 >>> exit()
 ```
+6. Permissions (Known Issue)
+
+If DAGs are not running because of permission issues in your docker image. Just
+make sure airflow:airflow users has access to the following files and
+directories.
+
+```
+credentials/[your_google_oauth_token.pickle] (read/write)
+output/ (read/write/execute)
+datasets/ (read/write/execute)
+datasets/* (read/write)
+```
 
 # Customizing Docker Image
 
