@@ -63,7 +63,11 @@ def create_dag(dag_id, args):
             keyword = kwargs.get('keyword')
             mime_type = kwargs.get('mime_type')
             execution_time_str = kwargs.get('ts')
-            execution_time = datetime.strptime(execution_time_str, '%Y-%m-%dT%H:%M:%S%z')
+            try:
+                # This is the format in production environment
+                execution_time = datetime.strptime(execution_time_str, '%Y-%m-%dT%H:%M:%S.%f%z')
+            except ValueError:
+                execution_time = datetime.strptime(execution_time_str, '%Y-%m-%dT%H:%M:%S%z')
             execution_date_str = execution_time.strftime('%Y-%m-%d')
 
             pm.execute_notebook(
